@@ -25,6 +25,7 @@ void MainManager::Initialize() {
         }
         enemies.push_back(newEnemy);
     }
+   
     for (int i = 0; i < 2; ++i) {
         RandomChest* newChest = new RandomChest;
         newChest->Initialize();
@@ -49,28 +50,28 @@ void MainManager::MoveEnemies() {
 
     if (player->agility <= 0) {
         for (auto& enemy : enemies) {
-            bool something;
+            bool isSomething;
             do {
                 enemy->position.x = 0 + rand() % 5;
                 enemy->position.y = 0 + rand() % 5;
 
-                something = false;
+                isSomething = false;
                 for (const auto& otherEnemy : enemies) {
                     if (enemy != otherEnemy && enemy->position.x == otherEnemy->position.x &&
                         enemy->position.y == otherEnemy->position.y) {
-                        something = true;
+                        isSomething = true;
                         break;
                     }
                 }
-                something = something || (enemy->position.x == player->position.x && enemy->position.y == player->position.y);
+                isSomething = isSomething || (enemy->position.x == player->position.x && enemy->position.y == player->position.y);
 
                 for (const auto& chest : chests) {
                     if (enemy->position.x == chest->position.x && enemy->position.y == chest->position.y) {
-                        something = true;
+                        isSomething = true;
                         break;
                     }
                 }
-            } while (something);
+            } while (isSomething);
         }player->agility = player->maxAgility;
     }
 }

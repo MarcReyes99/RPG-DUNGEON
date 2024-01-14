@@ -133,6 +133,8 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		std::cout << "Invalid input. Please enter W/A/S/D to move." << std::endl;
 		break;
 	}
+
+	mm->MoveEnemies();
 }
 
 void Combat(MainManager* mm) {
