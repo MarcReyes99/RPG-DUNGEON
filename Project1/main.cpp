@@ -47,6 +47,8 @@ int main() {
 
 void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 
+	system("cls");
+
 	std::cout << "-----DUNGEON-----" << std::endl << std::endl;
 
 	std::cout << "E -> Enemy";
@@ -56,38 +58,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	std::cout << "C -> Chest" << std::endl;
 
 	std::cout << "Health: " << mm->player->health << std::endl;
-
-	/*for (int i = 0; i < 5; ++i) {
-		for (int j = 0; j < 5; ++j) {
-			if (i == mm->player->position.y && j == mm->player->position.x) {
-				map[i][j] = "P";
-			}
-			else {
-				// Lógica para imprimir otros elementos (enemigos, cofres, etc.) en el mapa
-				// Puedes adaptar esto según la implementación de tu juego
-				std::cout << " ";
-			}
-		}
-		std::cout << std::endl;
-	}
-
-	std::cout << " ___  ___  ___  ___  ___" << std::endl;
-	std::cout << "|   " << "||   " << "||   " << "||   " << "||   " << "|" << std::endl;
-	std::cout << "| " << map[0][0] << " || " << map[0][1] << " || " << map[0][2] << " || " << map[0][3] << " || " << map[0][4] << " |" << std::endl;
-	std::cout << "|___" << "||___" << "||___" << "||___" << "||___" << "|" << std::endl;
-	std::cout << "|   " << "||   " << "||   " << "||   " << "||   " << "|" << std::endl;
-	std::cout << "| " << map[1][0] << " || " << map[1][1] << " || " << map[1][2] << " || " << map[1][3] << " || " << map[1][4] << " |" << std::endl;
-	std::cout << "|___" << "||___" << "||___" << "||___" << "||___" << "|" << std::endl;
-	std::cout << "|   " << "||   " << "||   " << "||   " << "||   " << "|" << std::endl;
-	std::cout << "| " << map[2][0] << " || " << map[2][1] << " || " << map[2][2] << " || " << map[2][3] << " || " << map[2][4] << " |" << std::endl;
-	std::cout << "|___" << "||___" << "||___" << "||___" << "||___" << "|" << std::endl;
-	std::cout << "|   " << "||   " << "||   " << "||   " << "||   " << "|" << std::endl;
-	std::cout << "| " << map[3][0] << " || " << map[3][1] << " || " << map[3][2] << " || " << map[3][3] << " || " << map[3][4] << " |" << std::endl;
-	std::cout << "|___" << "||___" << "||___" << "||___" << "||___" << "|" << std::endl;
-	std::cout << "|   " << "||   " << "||   " << "||   " << "||   " << "|" << std::endl;
-	std::cout << "| " << map[4][0] << " || " << map[4][1] << " || " << map[4][2] << " || " << map[4][3] << " || " << map[4][4] << " |" << std::endl;
-	std::cout << "|___" << "||___" << "||___" << "||___" << "||___" << "|" << std::endl;
-	std::cout << "_______________________" << std::endl;*/
 
 	std::cout << " ___  ___  ___  ___  ___" << std::endl;
 	for (int i = 0; i < 5; ++i) {
