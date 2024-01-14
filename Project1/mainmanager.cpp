@@ -49,7 +49,7 @@ void MainManager::Initialize() {
 void MainManager::MoveEnemies() {
 
     if (player->agility <= 0) {
-        for (auto& enemy : enemies) {
+        for (auto& enemy : enemies) /*Iteración de todos los enemigos */ {
             bool isSomething;
             do {
                 enemy->position.x = 0 + rand() % 5;
