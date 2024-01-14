@@ -11,13 +11,13 @@ void Player::Initialize() {
 	isDead = false;
 
 	health = 90 + rand() % (100 + 1 - 90);
-	maxHealth = 110;
+	maxHealth = health;
 
 	stamina = 90 + rand() % (100 + 1 - 90);
-	maxStamina = 110;
+	maxStamina = stamina;
 
 	agility = 3;
-	maxAgility;
+	maxAgility = 3;
 
 	potions = 0;
 	maxPotions = 3;

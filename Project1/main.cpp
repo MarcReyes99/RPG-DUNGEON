@@ -57,7 +57,9 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	std::cout << "   ";
 	std::cout << "C -> Chest" << std::endl;
 
-	std::cout << "Health: " << mm->player->health << std::endl;
+	std::cout << "Health: " << mm->player->health << "/" << mm->player->maxHealth << std::endl;
+	std::cout << "Potions: " << mm->player->potions << "/" << mm->player->maxPotions << std::endl;
+	std::cout << "Moves: " << mm->player->agility << "/" << mm->player->maxAgility << std::endl;
 
 	std::cout << " ___  ___  ___  ___  ___" << std::endl;
 	for (int i = 0; i < 5; ++i) {
@@ -83,12 +85,12 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	std::cout << "Enter direction: ";
 	std::cin >> direction;
 
-
 	switch (direction) {
 	case 'W':
 	case 'w':
 		if (mm->player->position.y > 0) {
 			mm->player->position.y--;
+			mm->player->agility--;
 			std::cout << "You went north" << std::endl;
 		}
 		break;
@@ -96,6 +98,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	case 'a':
 		if (mm->player->position.x > 0) {
 			mm->player->position.x--;
+			mm->player->agility--;
 			std::cout << "You went west" << std::endl;
 		}
 		break;
@@ -103,6 +106,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	case 's':
 		if (mm->player->position.y < 4) {
 			mm->player->position.y++;
+			mm->player->agility--;
 			std::cout << "You went south" << std::endl;
 		}
 		break;
@@ -110,6 +114,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	case 'd':
 		if (mm->player->position.x < 4) {
 			mm->player->position.x++;
+			mm->player->agility--;
 			std::cout << "You went east" << std::endl;
 		}
 		break;

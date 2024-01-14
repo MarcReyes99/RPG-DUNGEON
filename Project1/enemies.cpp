@@ -13,8 +13,8 @@ void Enemy::Initialize() {
 	isDead = false;
 
 	health = 60 + rand() % (90 + 1 - 60);
-	maxHealth = 90;
+	maxHealth = health;
 
 	stamina = 60 + rand() % (90 + 1 - 60);
-	maxStamina = 90;
+	maxStamina = stamina;
 }
