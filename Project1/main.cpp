@@ -83,8 +83,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	std::cout << "Enter direction: ";
 	std::cin >> direction;
 
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	switch (direction) {
 	case 'W':
