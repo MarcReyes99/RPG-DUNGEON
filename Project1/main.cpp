@@ -65,15 +65,30 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	for (int i = 0; i < 5; ++i) {
 		std::cout << "|   ||   ||   ||   ||   |" << std::endl;
 		for (int j = 0; j < 5; ++j) {
-			if (i == mm->player->position.y && j == mm->player->position.x) {
+			bool isPlayer = (i == mm->player->position.y && j == mm->player->position.x);
+			bool isEnemy = false;
+			bool isChest = false;
+			for (const auto& enemy : mm->enemies) {
+				if (i == enemy->position.y && j == enemy->position.x) {
+					isEnemy = true;
+					break;
+				}
+			}
+			for (const auto& chest : mm->chests) {
+				if (i == chest->position.y && j == chest->position.x) {
+					isChest = true;
+					break;
+				}
+			}
+			if (isPlayer) {
 				std::cout << "| P |";
 			}
-			/*else if (i == mm->enemies->position.y && j == mm->enemies->position.x) {
+			else if (isEnemy) {
 				std::cout << "| E |";
 			}
-			else if (i == mm->chests->position.y && j == mm->chests->position.x) {
+			else if (isChest) {
 				std::cout << "| C |";
-			}*/
+			}
 			else {
 				std::cout << "| " << map[i][j] << " " << "|";
 			}
@@ -91,7 +106,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		if (mm->player->position.y > 0) {
 			mm->player->position.y--;
 			mm->player->agility--;
-			std::cout << "You went north" << std::endl;
 		}
 		break;
 	case 'A':
@@ -99,7 +113,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		if (mm->player->position.x > 0) {
 			mm->player->position.x--;
 			mm->player->agility--;
-			std::cout << "You went west" << std::endl;
 		}
 		break;
 	case 'S':
@@ -107,7 +120,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		if (mm->player->position.y < 4) {
 			mm->player->position.y++;
 			mm->player->agility--;
-			std::cout << "You went south" << std::endl;
 		}
 		break;
 	case 'D':
@@ -115,7 +127,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		if (mm->player->position.x < 4) {
 			mm->player->position.x++;
 			mm->player->agility--;
-			std::cout << "You went east" << std::endl;
 		}
 		break;
 	default:

@@ -1,7 +1,7 @@
 #pragma once
 #include "MapPosition.h"
 
-struct Chest {
+struct RandomChest {
 
 	MapPosition position;
 	int gold;

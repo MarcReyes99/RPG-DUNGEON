@@ -4,11 +4,8 @@
 
 void Enemy::Initialize() {
 
-	do {
-		position.x = 0 + rand() % (4 + 1 - 0);
-		position.y = 0 + rand() % (4 + 1 - 0);
-
-	} while (position.x == 2 && position.y == 3);
+	position.x = 0 + rand() % (4 + 1 - 0);
+	position.y = 0 + rand() % (4 + 1 - 0);
 
 	isDead = false;
 

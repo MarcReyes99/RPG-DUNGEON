@@ -13,7 +13,7 @@ struct MainManager {
 
 	Player* player;
 	std::vector<Enemy*> enemies;
-	std::vector<Chest*> chests;
+	std::vector<RandomChest*> chests;
 
 	void Initialize();
 	void MoveEnemies() {};
