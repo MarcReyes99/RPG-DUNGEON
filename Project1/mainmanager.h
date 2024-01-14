@@ -16,5 +16,5 @@ struct MainManager {
 	std::vector<RandomChest*> chests;
 
 	void Initialize();
-	void MoveEnemies() {};
+	void MoveEnemies();
 };

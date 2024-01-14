@@ -90,7 +90,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 				std::cout << "| C |";
 			}
 			else {
-				std::cout << "| " << map[i][j] << " " << "|";
+				std::cout << "| " << map[i][j] << " |";
 			}
 		}
 		std::cout << std::endl;
@@ -133,7 +133,6 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		std::cout << "Invalid input. Please enter W/A/S/D to move." << std::endl;
 		break;
 	}
-	
 }
 
 void Combat(MainManager* mm) {
@@ -141,6 +140,16 @@ void Combat(MainManager* mm) {
 }
 void Chest(MainManager* mm) {
 
+	std::cout << "----- CHEST -----" << std::endl << std::endl;
+	std::cout << "< You open the chest and contains the following:  " << std::endl << std::endl;
+	if (!mm->chests.empty()) {
+		RandomChest* randomChest = mm->chests[0];
+		std::cout << ">" << randomChest->gold << "gold!";
+		std::cout << "> The chest contains a Gear!";
+		if (randomChest->gear == 1) {
+			//std::cout << "< Richard's Hatred" << mm->player->gold += 200;
+		}
+	}
 }
 void GameOver(MainManager* mm) {
 

@@ -19,6 +19,8 @@ struct Player {
 	int potions;
 	int maxPotions;
 
+	int gold;
+
 	void Initialize();
 
 };

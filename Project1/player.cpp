@@ -21,4 +21,6 @@ void Player::Initialize() {
 
 	potions = 3;
 	maxPotions = 3;
+
+	gold = 0;
 }
