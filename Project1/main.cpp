@@ -2,7 +2,10 @@
 #include "mainmanager.h"
 #include "mapposition.h"
 #define MAP_SIZE 5
-#include <cstdlib> 
+#include <cstdlib>
+#include <thread>
+#include <chrono>
+
 
 
 void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char &direction);
@@ -98,7 +101,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	}
 
 	std::cout << "W A S D --> Move" << std::endl;
-	std::cout << "P --> Potion" << std::endl;
+	std::cout << "P --> Potion" << std::endl << std::endl;
 
 	std::cout << "Enter your action: ";
 	std::cin >> direction;
@@ -143,17 +146,21 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		}
 		else {
 			std::cout << "You can't heal because you don't have potions!" << std::endl;
+			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
 		break;
 	default:
 		std::cout << "Invalid input. Please enter W/A/S/D to move." << std::endl;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		break;
 	}
 
 	mm->MoveEnemies();
 	
-	if (map[mm->player->position.y][mm->player->position.x] == 'C') {
-		mm->currentScene = CHEST;
+	for (const auto& chest : mm->chests) {
+		if (mm->player->position.x == chest->position.x && mm->player->position.y == chest->position.y) {
+			mm->currentScene = CHEST;
+		}
 	}
 }
 
