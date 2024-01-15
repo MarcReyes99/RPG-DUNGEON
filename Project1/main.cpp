@@ -133,13 +133,16 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		}
 	case 'P':
 	case 'p':
-		if (mm->player->maxHealth - mm->player->health >= mm->player->maxHealth * 0.6) {
+		if ((mm->player->maxHealth - mm->player->health) <= (mm->player->maxHealth * 0.6) && mm->player->potions > 0) {
 			mm->player->health = mm->player->maxHealth;
 			mm->player->potions--;
 		}
-		else {
+		else if (mm->player->potions > 0){
 			mm->player->health += mm->player->maxHealth * 0.4;
 			mm->player->potions--;
+		}
+		else {
+			std::cout << "You can't heal because you don't have potions!" << std::endl;
 		}
 		break;
 	default:
