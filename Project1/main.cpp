@@ -133,11 +133,13 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		}
 	case 'P':
 	case 'p':
-		if (mm->player->health - mm->player->maxHealth >= mm->player->maxHealth * 0.6) {
+		if (mm->player->maxHealth - mm->player->health >= mm->player->maxHealth * 0.6) {
 			mm->player->health = mm->player->maxHealth;
+			mm->player->potions--;
 		}
 		else {
 			mm->player->health += mm->player->maxHealth * 0.4;
+			mm->player->potions--;
 		}
 		break;
 	default:
