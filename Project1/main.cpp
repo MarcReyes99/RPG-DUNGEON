@@ -135,7 +135,12 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 	}
 
 	mm->MoveEnemies();
+	
+	if (mm->player->position.x == 'C' && mm->player->position.y == 'C') {
+		mm->currentScene = CHEST;
+	}
 }
+
 
 void Combat(MainManager* mm) {
 
@@ -147,9 +152,28 @@ void Chest(MainManager* mm) {
 	if (!mm->chests.empty()) {
 		RandomChest* randomChest = mm->chests[0];
 		std::cout << ">" << randomChest->gold << "gold!";
+		mm->player->gold += randomChest->gold;
 		std::cout << "> The chest contains a Gear!";
 		if (randomChest->gear == 1) {
-			//std::cout << "< Richard's Hatred" << mm->player->gold += 200;
+			std::cout << "> Richard's Hatred: +200g, +20HP, +40 STAMINA, +1 AGILITY";
+			mm->player->gold += 200;
+			mm->player->health += 20;
+			mm->player->stamina += 40;
+			mm->player->agility += 1;
+		}
+		else if (randomChest->gear == 2) {
+			std::cout << "> Swift Boots: +10g, -10HP, -5 STAMINA, +1 AGILITY";
+			mm->player->gold += 10;
+			mm->player->health += -10;
+			mm->player->stamina += -5;
+			mm->player->agility += 1;
+		}
+		else if (randomChest->gear == 3) {
+			std::cout << "> White Powder: +150g, +20HP, +40 STAMINA, +1 AGILITY";
+			mm->player->gold += 200;
+			mm->player->health += 20;
+			mm->player->stamina += 40;
+			mm->player->agility += 1;
 		}
 	}
 }

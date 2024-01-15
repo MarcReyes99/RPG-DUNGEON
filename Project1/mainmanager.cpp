@@ -50,7 +50,7 @@ void MainManager::MoveEnemies() {
 
     if (player->agility <= 0) {
         for (auto& enemy : enemies) /*Iteración de todos los enemigos */ {
-            bool isSomething;
+            bool isSomething; /*Variable para comprobar si hay algo en esa posicion*/
             do {
                 enemy->position.x = 0 + rand() % 5;
                 enemy->position.y = 0 + rand() % 5;
