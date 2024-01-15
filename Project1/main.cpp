@@ -97,7 +97,10 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		std::cout << "|___||___||___||___||___|" << std::endl;
 	}
 
-	std::cout << "Enter direction: ";
+	std::cout << "W A S D --> Move" << std::endl;
+	std::cout << "P --> Potion" << std::endl;
+
+	std::cout << "Enter your action: ";
 	std::cin >> direction;
 
 	switch (direction) {
@@ -128,6 +131,14 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 			mm->player->position.x++;
 			mm->player->agility--;
 		}
+	case 'P':
+	case 'p':
+		if (mm->player->health - mm->player->maxHealth >= mm->player->maxHealth * 0.6) {
+			mm->player->health = mm->player->maxHealth;
+		}
+		else {
+			mm->player->health += mm->player->maxHealth * 0.4;
+		}
 		break;
 	default:
 		std::cout << "Invalid input. Please enter W/A/S/D to move." << std::endl;
@@ -136,7 +147,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 
 	mm->MoveEnemies();
 	
-	if (mm->player->position.x == 'C' && mm->player->position.y == 'C') {
+	if (map[mm->player->position.y][mm->player->position.x] == 'C') {
 		mm->currentScene = CHEST;
 	}
 }
@@ -174,6 +185,44 @@ void Chest(MainManager* mm) {
 			mm->player->health += 20;
 			mm->player->stamina += 40;
 			mm->player->agility += 1;
+		}
+		else if (randomChest->gear == 4) {
+			std::cout << "> Radev's Mug: -300g, -20HP, -40 STAMINA, -1 AGILITY";
+			mm->player->gold += -300;
+			mm->player->health += -20;
+			mm->player->stamina += -40;
+			mm->player->agility += -1;
+		}
+		else if (randomChest->gear == 5) {
+			std::cout << "> Raven Feather: 50g, -10HP, +2 AGILITY";
+			mm->player->gold += 50;
+			mm->player->health += -10;
+			mm->player->agility += 2;
+		}
+		else if (randomChest->gear == 6) {
+			std::cout << "> Red Mushroom: +170g, +30HP";
+			mm->player->gold += 170;
+			mm->player->health += 30;
+		}
+		else if (randomChest->gear == 7) {
+			std::cout << "> Ugly Facemask: +10g, +5HP";
+			mm->player->gold += 10;
+			mm->player->health += 5;
+		}
+		else if (randomChest->gear == 8) {
+			std::cout << "> Broken Shield: +25g, +10HP";
+			mm->player->gold += 25;
+			mm->player->health += 10;
+		}
+		else if (randomChest->gear == 9) {
+			std::cout << "> Green Mushroom: -50g, -10 STAMINA";
+			mm->player->gold += -50;
+			mm->player->stamina += -10;
+		}
+		else if (randomChest->gear == 10) {
+			std::cout << "> Naughty Book: 69g, +7 STAMINA";
+			mm->player->gold += 69;
+			mm->player->stamina += 7;
 		}
 	}
 }

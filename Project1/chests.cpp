@@ -4,8 +4,10 @@
 
 void RandomChest::Initialize() {
 
-	position.x = 0 + rand() % (4 + 1 - 0);
-	position.y = 0 + rand() % (4 + 1 - 0);
+	do {
+		position.x = 0 + rand() % (4 + 1 - 0);
+		position.y = 0 + rand() % (4 + 1 - 0);
+	} while (position.x == 2 && position.y == 3);
 
 	gold = 50 + rand() % (200 + 1 - 50);
 
