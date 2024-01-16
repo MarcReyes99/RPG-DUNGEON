@@ -340,7 +340,10 @@ void Combat(MainManager* mm, int& id) {
 			enemy->isDead = true;
 			std::cout << "You killed the enemy!" << std::endl;
 			delete enemy;
-			mm->enemies.erase(mm->enemies.begin());
+			mm->enemies.erase(
+				std::remove_if(mm->enemies.begin(), mm->enemies.end(),
+					[](const auto& enemy) { return enemy->isDead; }),
+				mm->enemies.end());
 			mm->currentScene = DUNGEON;
 		}
 		if (mm->enemies.empty() && mm->chests.empty()) {

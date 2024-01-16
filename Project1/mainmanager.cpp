@@ -49,13 +49,16 @@ void MainManager::Initialize() {
 void MainManager::MoveEnemies() {
 
     if (player->agility <= 0) {
-        for (auto& enemy : enemies) /*Iteración de todos los enemigos */ {
-            bool isSomething; /*Variable para comprobar si hay algo en esa posicion*/
+        for (const auto& enemy : enemies) {
+            bool isSomething; /*Bool para comprobar si hay algo en esa posicion*/
             do {
                 enemy->position.x = 0 + rand() % 5;
                 enemy->position.y = 0 + rand() % 5;
 
                 isSomething = false;
+
+                isSomething = isSomething || (enemy->position.x == player->position.x && enemy->position.y == player->position.y);
+
                 for (const auto& otherEnemy : enemies) {
                     if (enemy != otherEnemy && enemy->position.x == otherEnemy->position.x &&
                         enemy->position.y == otherEnemy->position.y) {
@@ -63,7 +66,6 @@ void MainManager::MoveEnemies() {
                         break;
                     }
                 }
-                isSomething = isSomething || (enemy->position.x == player->position.x && enemy->position.y == player->position.y);
 
                 for (const auto& chest : chests) {
                     if (enemy->position.x == chest->position.x && enemy->position.y == chest->position.y) {

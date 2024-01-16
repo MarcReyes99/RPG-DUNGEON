@@ -3,6 +3,9 @@
 #include "Enemies.h"
 #include "Chests.h"
 #include "vector"
+#include <iostream>
+#include <algorithm>
+#include <iomanip>
 
 enum Scene { DUNGEON, COMBAT, CHEST, GAMEOVER };
 
