@@ -158,7 +158,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 
 	mm->MoveEnemies();
 
-	id = -1;
+	id = 0;
 
 	for (int i = 0; i < mm->enemies.size(); i++) {
 		const auto& enemy = mm->enemies[i];
@@ -168,7 +168,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 		}
 	}
 	
-	id = -1;
+	id = 0;
 
 	for (int i = 0; i < mm->chests.size(); i++) {
 		const auto& chest = mm->chests[i];
@@ -183,55 +183,69 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 void Combat(MainManager* mm, int& id) {
 	system("cls");
 
-	for (const auto& enemy : mm->enemies) {
-		char action;
-		std::cout << "----- COMBAT -----" << std::endl << std::endl;
-		std::cout << "-- Enemy --" << std::endl;
-		std::cout << "[==========]" << enemy[id].health << "/" << enemy[id].maxHealth << std::endl;
-		std::cout << "[>>>>>>>>>>]" << enemy[id].stamina << "/" << enemy[id].maxStamina << std::endl;
-		std::cout << "-------------------" << std::endl << std::endl;
-		std::cout << "-- Player --" << std::endl;
-		std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << "HP" << std::endl;
-		std::cout << "[>>>>>>>>>>]" << mm->player->stamina << "/" << mm->player->maxStamina << "Stamina" << std::endl << std::endl;
-		std::cout << "Potions: " << mm->player->potions << "/" << mm->player->maxPotions << std::endl << std::endl;
-		std::cout << "-----------------------------" << std::endl << std::endl;
-		std::cout << "A -> Attack" << std::endl;
-		std::cout << "D -> Defend" << std::endl;
-		std::cout << "R -> Rest" << std::endl;
-		std::cout << "P -> Potion" << std::endl;
-		std::cout << "Enter your action: ";
-		std::cin >> action;
+	Enemy* enemy = mm->enemies[id];
+	
+	char action;
+	std::cout << "----- COMBAT -----" << std::endl << std::endl;
+	std::cout << "-- Enemy --" << std::endl;
+	std::cout << "[==========]" << enemy[id].health << "/" << enemy[id].maxHealth << " HP" << std::endl;
+	std::cout << "[>>>>>>>>>>]" << enemy[id].stamina << "/" << enemy[id].maxStamina << " Stamina" << std::endl;
+	std::cout << "-------------------" << std::endl << std::endl;
+	std::cout << "-- Player --" << std::endl;
+	std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << " HP" << std::endl;
+	std::cout << "[>>>>>>>>>>]" << mm->player->stamina << "/" << mm->player->maxStamina << " Stamina" << std::endl << std::endl;
+	std::cout << "Potions: " << mm->player->potions << "/" << mm->player->maxPotions << std::endl << std::endl;
+	std::cout << "-----------------------------" << std::endl << std::endl;
+	std::cout << "A -> Attack" << std::endl;
+	std::cout << "D -> Defend" << std::endl;
+	std::cout << "R -> Rest" << std::endl;
+	std::cout << "P -> Potion" << std::endl;
+	std::cout << "Enter your action: ";
+	std::cin >> action;
 
-		switch (action) {
-		case 'A':
-		case 'a':
-			int damage;
-			int enemyDamage = rand() % (enemy[id].stamina + 1 - 0);
-			std::cout << "Enter the attack value (Max. " << mm->player->stamina << "): ";
-			std::cin >> damage;
-			if (damage <= mm->player->stamina && damage > enemyDamage) {
-				enemy[id].health - damage;
-				std::cout << "You strike the enemy with more force! The enemy recieves " << damage << " damage" << std::endl;
+	switch (action) {
+	case 'D':
+	case 'd':
 
-			} 
-			else if (damage <= mm->player->stamina && damage < enemyDamage) {
-				std::cout << "You receive " << mm->player->health - enemy[id].stamina << " damage!" << std::endl;
-				mm->player->health -= enemy[id].stamina;
+	case 'A':
+	case 'a':
+		int damage;
+		int enemyDamage = rand() % (enemy[id].stamina + 1 - 0);
+		std::cout << "Enter the attack value (Max. " << mm->player->stamina << "): ";
+		std::cin >> damage;
+		if (damage <= mm->player->stamina && damage > enemyDamage) {
+			enemy[id].health -= damage;
+			enemy[id].stamina -= enemyDamage;
+			mm->player->stamina -= damage;
+			std::cout << "You strike the enemy with more force! The enemy recieves " << damage << " damage" << std::endl;
+			if (enemy[id].health <= 0) {
+
+				delete enemy;
+				mm->enemies.erase(mm->enemies.begin() + id);
+				mm->currentScene = DUNGEON;
 			}
-			system("pause");
 		}
+		else if (damage <= mm->player->stamina && damage < enemyDamage) {
+			std::cout << "You receive " << mm->player->health - enemy[id].stamina << " damage!" << std::endl;
+			enemy[id].stamina -= enemyDamage;
+			mm->player->health -= enemyDamage;
+			mm->player->stamina -= damage;
+		}
+		system("pause");
+		break;
 	}
 
 }
 void Chest(MainManager* mm, int& id) {
 	system("cls");
 
+	RandomChest* randomChest = mm->chests[id];
+
 	std::cout << "----- CHEST -----" << std::endl << std::endl;
 	std::cout << " > You open the chest and it contains the following:  " << std::endl << std::endl;
-
-	RandomChest* randomChest = mm->chests[id];
 	std::cout << ">" << randomChest->gold << " gold!" << std::endl;
 	mm->player->gold += randomChest->gold;
+	
 	if (randomChest->containsPotion && mm->player->potions < mm->player->maxPotions) {
 		mm->player->potions++;
 		std::cout << " > The chest contains a potion!" << std::endl;
