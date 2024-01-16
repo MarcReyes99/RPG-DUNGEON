@@ -3,6 +3,8 @@
 #include "Enemies.h"
 #include "Chests.h"
 #include "vector"
+#include <thread>
+#include <chrono>
 
 enum Scene { DUNGEON, COMBAT, CHEST, GAMEOVER };
 

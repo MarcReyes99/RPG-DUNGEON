@@ -8,15 +8,16 @@
 
 
 
-void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char &direction);
-void Combat(MainManager* mm);
-void Chest(MainManager* mm);
+void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char &direction, int& id);
+void Combat(MainManager* mm, int& id);
+void Chest(MainManager* mm, int& id);
 void GameOver(MainManager* mm);
 
 int main() {
 	srand(time(NULL));
 	MainManager* mm = new MainManager;
 	mm->Initialize();
+	int id;
 	char direction = ' ';
 
 	char map[MAP_SIZE][MAP_SIZE]{
@@ -31,13 +32,13 @@ int main() {
 		switch (mm->currentScene)
 		{
 		case DUNGEON:
-			Dungeon(mm, map, direction);
+			Dungeon(mm, map, direction, id);
 			break;
 		case COMBAT:
-			Combat(mm);
+			Combat(mm, id);
 			break;
 		case CHEST:
-			Chest(mm);
+			Chest(mm, id);
 			break;
 		case GAMEOVER:
 			GameOver(mm);
@@ -48,7 +49,7 @@ int main() {
 	} while (!mm->gameFinished);
 }
 
-void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
+void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int& id) {
 
 	system("cls");
 
@@ -155,28 +156,90 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction) {
 		break;
 	}
 
+
 	mm->MoveEnemies();
+
+	id = -1;
+
+	for (int i = 0; i < mm->enemies.size(); i++) {
+		const auto& enemy = mm->enemies[i];
+		if (mm->player->position.x == enemy->position.x && mm->player->position.y == enemy->position.y) {
+			id = i;
+			mm->currentScene = COMBAT;
+		}
+	}
 	
-	for (const auto& chest : mm->chests) {
+	id = -1;
+
+	for (int i = 0; i < mm->chests.size(); i++) {
+		const auto& chest = mm->chests[i];
 		if (mm->player->position.x == chest->position.x && mm->player->position.y == chest->position.y) {
+			id = i;
 			mm->currentScene = CHEST;
 		}
 	}
 }
 
 
-void Combat(MainManager* mm) {
+void Combat(MainManager* mm, int& id) {
+	system("cls");
+
+	for (const auto& enemy : mm->enemies) {
+		char action;
+		std::cout << "----- COMBAT -----" << std::endl << std::endl;
+		std::cout << "-- Enemy --" << std::endl;
+		std::cout << "[==========] ? HP" << std::endl;
+		std::cout << "[>>>>>>>>>>] ? Stamina" << std::endl << std::endl;
+		std::cout << "-------------------" << std::endl << std::endl;
+		std::cout << "-- Player --" << std::endl;
+		std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << "HP" << std::endl;
+		std::cout << "[>>>>>>>>>>]" << mm->player->stamina << "/" << mm->player->maxStamina << "Stamina" << std::endl << std::endl;
+		std::cout << "Potions: " << mm->player->potions << "/" << mm->player->maxPotions << std::endl << std::endl;
+		std::cout << "-----------------------------" << std::endl << std::endl;
+		std::cout << "A -> Attack" << std::endl;
+		std::cout << "D -> Defend" << std::endl;
+		std::cout << "R -> Rest" << std::endl;
+		std::cout << "P -> Potion" << std::endl;
+		std::cout << "Enter your action";
+		std::cin >> action;
+
+		/*switch (action) {
+		case 'A':
+			int damage;
+			int enemyDamage = 0 % rand() % (mm->enemies[id]->stamina + 1 - 0);
+			std::cout << "Enter the attack value (Max" << mm->player->stamina << ")";
+			std::cin >> damage;
+			if (damage < mm->player->stamina && damage > enemyDamage) {
+				mm->enemies->health - damage;
+			} std::cout << "You strike the enemy with more force! The enemy recieves " << damage << "damage";
+			else {
+
+			}
+
+		}*/
+	}
 
 }
-void Chest(MainManager* mm) {
+void Chest(MainManager* mm, int& id) {
 	system("cls");
 
 	std::cout << "----- CHEST -----" << std::endl << std::endl;
 	std::cout << " > You open the chest and it contains the following:  " << std::endl << std::endl;
 
-	RandomChest* randomChest = mm->chests[0];
-	std::cout << "	>" << randomChest->gold << "gold!" << std::endl;
+	RandomChest* randomChest = mm->chests[id];
+	std::cout << ">" << randomChest->gold << " gold!" << std::endl;
 	mm->player->gold += randomChest->gold;
+	if (randomChest->containsPotion && mm->player->potions < mm->player->maxPotions) {
+		mm->player->potions++;
+		std::cout << " > The chest contains a potion!" << std::endl;
+	}
+	else if (!randomChest->containsPotion) {
+		std::cout << std::endl;
+	}
+	else {
+		std::cout << " > The chest contains a potion!" << std::endl;
+		std::cout << " > You already have the maximum number of potions!" << std::endl;
+	}
 	std::cout << "	> The chest contains a Gear!" << std::endl;
 	
 	if (randomChest->gear == 1) {
@@ -249,8 +312,9 @@ void Chest(MainManager* mm) {
 		randomChest->isLooted = true;
 	}
 	if (randomChest->isLooted) {
+		
 		delete randomChest;
-		mm->chests.erase(mm->chests.begin());
+		mm->chests.erase(mm->chests.begin() + id);
 	}
 	std::cout << std::endl;
 	system("pause");
