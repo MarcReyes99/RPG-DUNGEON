@@ -3,8 +3,6 @@
 #include "mapposition.h"
 #define MAP_SIZE 5
 #include <cstdlib>
-#include <thread>
-#include <chrono>
 
 
 
@@ -135,6 +133,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 			mm->player->position.x++;
 			mm->player->agility--;
 		}
+		break;
 	case 'P':
 	case 'p':
 		if ((mm->player->maxHealth - mm->player->health) <= (mm->player->maxHealth * 0.6) && mm->player->potions > 0) {
@@ -147,12 +146,12 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 		}
 		else {
 			std::cout << "You can't heal because you don't have potions!" << std::endl;
-			std::this_thread::sleep_for(std::chrono::seconds(1));
+			system("pause");
 		}
 		break;
 	default:
 		std::cout << "Invalid input. Please enter W/A/S/D to move." << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		system("pause");
 		break;
 	}
 
@@ -188,8 +187,8 @@ void Combat(MainManager* mm, int& id) {
 		char action;
 		std::cout << "----- COMBAT -----" << std::endl << std::endl;
 		std::cout << "-- Enemy --" << std::endl;
-		std::cout << "[==========] ? HP" << std::endl;
-		std::cout << "[>>>>>>>>>>] ? Stamina" << std::endl << std::endl;
+		std::cout << "[==========]" << enemy[id].health << "/" << enemy[id].maxHealth << std::endl;
+		std::cout << "[>>>>>>>>>>]" << enemy[id].stamina << "/" << enemy[id].maxStamina << std::endl;
 		std::cout << "-------------------" << std::endl << std::endl;
 		std::cout << "-- Player --" << std::endl;
 		std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << "HP" << std::endl;
@@ -200,23 +199,27 @@ void Combat(MainManager* mm, int& id) {
 		std::cout << "D -> Defend" << std::endl;
 		std::cout << "R -> Rest" << std::endl;
 		std::cout << "P -> Potion" << std::endl;
-		std::cout << "Enter your action";
+		std::cout << "Enter your action: ";
 		std::cin >> action;
 
-		/*switch (action) {
+		switch (action) {
 		case 'A':
+		case 'a':
 			int damage;
-			int enemyDamage = 0 % rand() % (mm->enemies[id]->stamina + 1 - 0);
-			std::cout << "Enter the attack value (Max" << mm->player->stamina << ")";
+			int enemyDamage = rand() % (enemy[id].stamina + 1 - 0);
+			std::cout << "Enter the attack value (Max. " << mm->player->stamina << "): ";
 			std::cin >> damage;
-			if (damage < mm->player->stamina && damage > enemyDamage) {
-				mm->enemies->health - damage;
-			} std::cout << "You strike the enemy with more force! The enemy recieves " << damage << "damage";
-			else {
+			if (damage <= mm->player->stamina && damage > enemyDamage) {
+				enemy[id].health - damage;
+				std::cout << "You strike the enemy with more force! The enemy recieves " << damage << " damage" << std::endl;
 
+			} 
+			else if (damage <= mm->player->stamina && damage < enemyDamage) {
+				std::cout << "You receive " << mm->player->health - enemy[id].stamina << " damage!" << std::endl;
+				mm->player->health -= enemy[id].stamina;
 			}
-
-		}*/
+			system("pause");
+		}
 	}
 
 }
@@ -238,77 +241,82 @@ void Chest(MainManager* mm, int& id) {
 	}
 	else {
 		std::cout << " > The chest contains a potion!" << std::endl;
-		std::cout << " > You already have the maximum number of potions!" << std::endl;
+		std::cout << " >	You already have the maximum number of potions!" << std::endl;
 	}
 	std::cout << "	> The chest contains a Gear!" << std::endl;
 	
 	if (randomChest->gear == 1) {
 		std::cout << "		> Richard's Hatred: +200g, +20HP, +40 STAMINA, +1 AGILITY";
 		mm->player->gold += 200;
+		mm->player->health += 20;
 		mm->player->maxHealth += 20;
-		mm->player->stamina += 40;
-		mm->player->agility += 1;
+		mm->player->maxStamina += 40;
+		mm->player->maxAgility += 1;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 2) {
 		std::cout << "		> Swift Boots: +10g, -10HP, -5 STAMINA, +1 AGILITY";
 		mm->player->gold += 10;
 		mm->player->health += -10;
-		mm->player->stamina += -5;
-		mm->player->agility += 1;
+		mm->player->maxStamina += -5;
+		mm->player->maxAgility += 1;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 3) {
 		std::cout << "		> White Powder: +150g, +20HP, +40 STAMINA, +1 AGILITY";
 		mm->player->gold += 200;
+		mm->player->health += 20;
 		mm->player->maxHealth += 20;
-		mm->player->stamina += 40;
-		mm->player->agility += 1;
+		mm->player->maxStamina += 40;
+		mm->player->maxAgility += 1;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 4) {
 		std::cout << "		> Radev's Mug: -300g, -20HP, -40 STAMINA, -1 AGILITY";
 		mm->player->gold += -300;
 		mm->player->health += -20;
-		mm->player->stamina += -40;
-		mm->player->agility += -1;
+		mm->player->maxStamina += -40;
+		mm->player->maxAgility += -1;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 5) {
 		std::cout << "		> Raven Feather: 50g, -10HP, +2 AGILITY";
 		mm->player->gold += 50;
 		mm->player->health += -10;
-		mm->player->agility += 2;
+		mm->player->maxAgility += 2;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 6) {
 		std::cout << "		> Red Mushroom: +170g, +30HP";
 		mm->player->gold += 170;
+		mm->player->health += 30;
 		mm->player->maxHealth += 30;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 7) {
 		std::cout << "		> Ugly Facemask: +10g, +5HP";
 		mm->player->gold += 10;
+		mm->player->health += 5;
 		mm->player->maxHealth += 5;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 8) {
 		std::cout << "		> Broken Shield: +25g, +10HP";
 		mm->player->gold += 25;
+		mm->player->health += 10;
 		mm->player->maxHealth += 10;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 9) {
 		std::cout << "		> Green Mushroom: -50g, -10 STAMINA";
 		mm->player->gold += -50;
-		mm->player->stamina += -10;
+		mm->player->maxStamina += -10;
 		randomChest->isLooted = true;
 	}
 	else if (randomChest->gear == 10) {
 		std::cout << "		> Naughty Book: 69g, +7 STAMINA";
 		mm->player->gold += 69;
-		mm->player->stamina += 7;
+		mm->player->maxStamina += 7;
 		randomChest->isLooted = true;
 	}
 	if (randomChest->isLooted) {
