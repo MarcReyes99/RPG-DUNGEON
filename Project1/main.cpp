@@ -41,6 +41,7 @@ int main() {
 		case GAMEOVER:
 			GameOver(mm);
 			break;
+			return 0;
 		default:
 			break;
 		}
@@ -136,7 +137,7 @@ void Dungeon(MainManager* mm, char map[MAP_SIZE][MAP_SIZE], char& direction, int
 		break;
 	case 'P':
 	case 'p':
-		if ((mm->player->maxHealth - mm->player->health) <= (mm->player->maxHealth * 0.6) && mm->player->potions > 0) {
+		if (mm->player->maxHealth - mm->player->health >= (mm->player->maxHealth * 0.4) && mm->player->potions > 0) {
 			mm->player->health = mm->player->maxHealth;
 			mm->player->potions--;
 		}
@@ -188,8 +189,8 @@ void Combat(MainManager* mm, int& id) {
 	char action;
 	std::cout << "----- COMBAT -----" << std::endl << std::endl;
 	std::cout << "-- Enemy --" << std::endl;
-	std::cout << "[==========]" << enemy[id].health << "/" << enemy[id].maxHealth << " HP" << std::endl;
-	std::cout << "[>>>>>>>>>>]" << enemy[id].stamina << "/" << enemy[id].maxStamina << " Stamina" << std::endl;
+	std::cout << "[==========]" << enemy->health << "/" << enemy->maxHealth << " HP" << std::endl;
+	std::cout << "[>>>>>>>>>>]" << enemy->stamina << "/" << enemy->maxStamina << " Stamina" << std::endl;
 	std::cout << "-------------------" << std::endl << std::endl;
 	std::cout << "-- Player --" << std::endl;
 	std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << " HP" << std::endl;
@@ -203,38 +204,162 @@ void Combat(MainManager* mm, int& id) {
 	std::cout << "Enter your action: ";
 	std::cin >> action;
 
+	int damage;
+	int enemyDamage;
+	int twentypercent = enemy->maxStamina * 0.2;
+	if (enemy->stamina < twentypercent) {
+		enemyDamage = rand() % (twentypercent + 1 - enemy->stamina);
+	}
+	else {
+		enemyDamage = rand() % (enemy->stamina + 1 - twentypercent);
+	}
+
+	bool isDefend = false;
+	bool isRest = false;
+	bool isAttack = false;
+
+	if (enemy->health < (enemy->maxHealth * 0.3) && enemy->stamina < (enemy->maxStamina * 0.3)) {
+		isDefend = true;
+	}
+	else if (enemy->stamina < (enemy->maxStamina * 0.2)) {
+		isRest = true;
+	}
+	else {
+		isAttack = true;
+	}
+
 	switch (action) {
 	case 'D':
 	case 'd':
-
-	case 'A':
-	case 'a':
-		int damage;
-		int enemyDamage = rand() % (enemy[id].stamina + 1 - 0);
-		std::cout << "Enter the attack value (Max. " << mm->player->stamina << "): ";
-		std::cin >> damage;
-		if (damage <= mm->player->stamina && damage > enemyDamage) {
-			enemy[id].health -= damage;
-			enemy[id].stamina -= enemyDamage;
-			mm->player->stamina -= damage;
-			std::cout << "You strike the enemy with more force! The enemy recieves " << damage << " damage" << std::endl;
-			if (enemy[id].health <= 0) {
-
-				delete enemy;
-				mm->enemies.erase(mm->enemies.begin() + id);
-				mm->currentScene = DUNGEON;
+		if (isAttack && enemyDamage <= enemy->stamina) {
+			enemy->stamina -= enemyDamage;
+			mm->player->health -= enemyDamage * 0.25;
+			if (mm->player->stamina >= mm->player->maxStamina * 0.75) {
+				mm->player->stamina = mm->player->maxStamina;
+			}
+			else {
+				mm->player->stamina += mm->player->maxStamina * 0.25;
+			}
+			std::cout << "The enemy decided to attack so you mitigated 75% of his damage and recovered 25% of your stamina" << std::endl;
+			std::cout << "You receive " << enemyDamage * 0.25 << " damage!" << std::endl;
+			if (mm->player->health <= 0) {
+				mm->currentScene = GAMEOVER;
 			}
 		}
-		else if (damage <= mm->player->stamina && damage < enemyDamage) {
-			std::cout << "You receive " << mm->player->health - enemy[id].stamina << " damage!" << std::endl;
-			enemy[id].stamina -= enemyDamage;
-			mm->player->health -= enemyDamage;
-			mm->player->stamina -= damage;
+		else if (isDefend) {
+			enemy->stamina += enemy->maxStamina * 0.25;
+			if (mm->player->stamina >= mm->player->maxStamina * 0.75) {
+				mm->player->stamina = mm->player->maxStamina;
+			}
+			else {
+				mm->player->stamina += mm->player->maxStamina * 0.25;
+			}
+			std::cout << "The enemy also decided to defend, you both recover 25% of your stamina!" << std::endl;
+		}
+		else if (isRest) {
+			enemy->stamina = enemy->maxStamina;
+			if (mm->player->stamina >= mm->player->maxStamina * 0.75) {
+				mm->player->stamina = mm->player->maxStamina;
+			}
+			else {
+				mm->player->stamina += mm->player->maxStamina * 0.25;
+			}
+			std::cout << "The enemy decided to rest, you recover 25% of your stamina and the enemy recovers all of his stamina!" << std::endl;
 		}
 		system("pause");
 		break;
+	case 'R':
+	case 'r':
+		if (isAttack && enemyDamage <= enemy->stamina) {
+			enemy->stamina -= enemyDamage;
+			mm->player->health -= enemyDamage;
+			mm->player->stamina = mm->player->maxStamina;
+			std::cout << "The enemy decided to attack and you recovered 25% of your stamina" << std::endl;
+			std::cout << "You receive " << enemyDamage << " damage!" << std::endl;
+			if (mm->player->health <= 0) {
+				mm->currentScene = GAMEOVER;
+			}
+		}
+		else if (isDefend) {
+			enemy->stamina += enemy->maxStamina * 0.25;
+			mm->player->stamina = mm->player->maxStamina;
+			std::cout << "The enemy decided to defend, he recovers 25% of stamina and you recover all your stamina!" << std::endl;
+		}
+		else if (isRest) {
+			enemy->stamina = enemy->maxStamina;
+			mm->player->stamina = mm->player->maxStamina;
+			std::cout << "The enemy also decided to rest, you both recover all of your stamina!" << std::endl;
+		}
+		system("pause");
+		break;
+	case 'A':
+	case 'a':
+		std::cout << "Enter the attack value (Max. " << mm->player->stamina << "): ";
+		std::cin >> damage;
+		if (damage <= mm->player->stamina && enemyDamage <= enemy->stamina) {
+			if (isAttack && damage > enemyDamage) {
+				enemy->stamina -= enemyDamage;
+				enemy->health -= damage;
+				mm->player->stamina -= damage;
+				std::cout << "You strike the enemy with more force! The enemy recieves " << damage << " damage" << std::endl;
+			}
+			else if (isAttack && damage < enemyDamage) {
+				enemy->stamina -= enemyDamage;
+				mm->player->health -= enemyDamage;
+				mm->player->stamina -= damage;
+				std::cout << "The enemy striked harder! You received " << enemyDamage << " damage!" << std::endl;
+				if (mm->player->health <= 0) {
+					mm->currentScene = GAMEOVER;
+				}
+			}
+			else if (isDefend) {
+				enemy->health -= damage * 0.25;
+				enemy->stamina += enemy->maxStamina * 0.25;
+				mm->player->stamina -= damage;
+			}
+			else if (isRest) {
+				enemy->health -= damage;
+				enemy->stamina = enemy->maxStamina;
+				mm->player->stamina -= damage;
+			}
+		}
+		else {
+			std::cout << "You cannot enter a value greater than your stamina!" << std::endl;
+		}
+		if (enemy->health <= 0) {
+			enemy->isDead = true;
+			std::cout << "You killed the enemy!" << std::endl;
+			delete enemy;
+			mm->enemies.erase(mm->enemies.begin());
+			mm->currentScene = DUNGEON;
+		}
+		if (mm->enemies.empty() && mm->chests.empty()) {
+			mm->currentScene = GAMEOVER;
+		}
+		system("pause");
+		break;
+	case 'P':
+	case 'p':
+		if ((mm->player->maxHealth - mm->player->health) <= (mm->player->maxHealth * 0.6) && mm->player->potions > 0) {
+			mm->player->health = mm->player->maxHealth;
+			mm->player->potions--;
+			std::cout << "You healed yourself!" << std::endl;
+		}
+		else if (mm->player->potions > 0) {
+			mm->player->health += mm->player->maxHealth * 0.4;
+			mm->player->potions--;
+			std::cout << "You healed yourself!" << std::endl;
+		}
+		else {
+			std::cout << "You can't heal because you don't have potions!" << std::endl;
+		}
+		system("pause");
+		break;
+	default:
+		std::cout << "Invalid input. Please enter A/R/D/P to move." << std::endl;
+		system("pause");
+		break;
 	}
-
 }
 void Chest(MainManager* mm, int& id) {
 	system("cls");
@@ -338,10 +463,27 @@ void Chest(MainManager* mm, int& id) {
 		delete randomChest;
 		mm->chests.erase(mm->chests.begin() + id);
 	}
+	if (mm->enemies.empty() && mm->chests.empty()) {
+		mm->currentScene = GAMEOVER;
+	}
 	std::cout << std::endl;
 	system("pause");
 	mm->currentScene = DUNGEON;
 }
 void GameOver(MainManager* mm) {
+	system("cls");
+	
+	std::cout << "------- Game Over -------" << std::endl << std::endl;
 
+	if (mm->player->health <= 0) {
+		std::cout << "< Game Over!. Your final score is: " << mm->player->gold << std::endl;
+		system("pause");
+		mm->gameFinished = true;
+	}
+
+	else if (mm->enemies.empty() && mm->chests.empty()) {
+		std::cout << "YOU WON!!!. Your final score is: " << mm->player->gold << std::endl;
+		system("pause");
+		mm->gameFinished = true;
+	}
 }
