@@ -189,8 +189,8 @@ void Combat(MainManager* mm, int& id) {
 	char action;
 	std::cout << "----- COMBAT -----" << std::endl << std::endl;
 	std::cout << "-- Enemy --" << std::endl;
-	std::cout << "[==========]" << enemy->health << "/" << enemy->maxHealth << " HP" << std::endl;
-	std::cout << "[>>>>>>>>>>]" << enemy->stamina << "/" << enemy->maxStamina << " Stamina" << std::endl;
+	std::cout << "[==========]" << " ? " << std::endl;
+	std::cout << "[>>>>>>>>>>]" << " ? " << std::endl;
 	std::cout << "-------------------" << std::endl << std::endl;
 	std::cout << "-- Player --" << std::endl;
 	std::cout << "[==========]" << mm->player->health << "/" << mm->player->maxHealth << " HP" << std::endl;
